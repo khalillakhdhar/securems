@@ -10,6 +10,7 @@ public class CorsConfig {
 	public WebMvcConfigurer corsConfigurer()
 	{
 		return new WebMvcConfigurer() {
+			@SuppressWarnings("unused")
 			public void addCorsMapping(CorsRegistry registry)
 				{
 					registry.addMapping("/**")
