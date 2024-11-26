@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.elitech.filter.JwtFilter;
 import com.elitech.service.UserService;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -27,20 +26,22 @@ public class SecurityConfig {
 
     @Autowired
     private JwtFilter jwtFilter;
+    @Autowired
+    private UserService userService;
+    
     @Bean
-    public UserDetailsService userDetailsService(){
-        return new UserService();
+    public UserDetailsService userDetailsService() {
+        return userService;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-    
-        return httpSecurity.csrf(csrf->csrf.disable())
-                .authorizeHttpRequests(auth->auth
-                        .requestMatchers("/utilisateurs/login","/utilisateurs","/welcome")
+        return httpSecurity.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/users/login", "/users/register", "/welcome")  // Autoriser l'accès à ces pages sans authentification
                         .permitAll()
                         .anyRequest().authenticated())
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -58,6 +59,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

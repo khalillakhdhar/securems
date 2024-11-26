@@ -1,6 +1,6 @@
 package com.elitech.model;
 
-import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,5 +25,12 @@ public class Role {
 private int id;
 private String roleName;
 @ManyToMany(mappedBy = "roles")
-private List<User> users;
+private Set<User> users;
+
+public Role(String roleName) {
+	super();
+	this.roleName = roleName;
+}
+
+
 }

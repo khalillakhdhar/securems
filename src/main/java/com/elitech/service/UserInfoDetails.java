@@ -1,7 +1,7 @@
 package com.elitech.service;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -16,14 +16,14 @@ public class UserInfoDetails implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	private final String userName;
     private final String password;
-    private final List<GrantedAuthority> authorities;
+    private final Set<GrantedAuthority> authorities;
 
     public UserInfoDetails(User user) {
         this.userName = user.getEmail();
         this.password = user.getPassword();
         this.authorities = user.getRoles().stream()
             .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     }
 
     @Override

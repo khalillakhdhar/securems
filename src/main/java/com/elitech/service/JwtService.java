@@ -4,7 +4,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+
 import java.util.function.Function;
 
 
@@ -25,11 +25,11 @@ import org.springframework.beans.factory.annotation.Value;
 @Component
 public class JwtService {
 	@Value("${jwt.secret}")
-	private String SECERET;
+	private String SECRET;
 @Autowired
 UserService userInfoService;
     public String generateToken(int UserId){
-        Map<String, Objects> claims = new HashMap<>();
+    	Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(String.valueOf(UserId))
@@ -39,13 +39,13 @@ UserService userInfoService;
     }
     public UserDetails getUserFromToken(String token) {
         String userId = extractUserName(token); // Now this returns the user ID
-        User user = UserMapper.toReadEntity(userInfoService.getUserById(Integer.parseInt(userId)));
+        User user = UserMapper.toEntity(userInfoService.getUserById(Integer.parseInt(userId)));
         return new UserInfoDetails(user);
     }
 
 
     private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECERET);
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
     }
     public String extractUserName(String token){
